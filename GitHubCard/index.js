@@ -1,3 +1,5 @@
+import axios from "axios";
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -17,6 +19,17 @@
     and append the returned markup to the DOM as a child of .cards
 */
 
+axios
+  .get("https://api.github.com/users/ialkamal")
+  .then((response) => {
+    document
+      .querySelector(".cards")
+      .appendChild(githubCardCreator(response.data));
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
     follow this link in your browser https://api.github.com/users/<Your github name>/followers,
@@ -29,6 +42,37 @@
 */
 
 const followersArray = [];
+axios
+  .get("https://api.github.com/users/ialkamal/followers")
+  .then((response) => {
+    response.data.forEach((item) => {
+      followersArray.push(item.login);
+    });
+    return followersArray.concat([
+      "tetondan",
+      "dustinmyers",
+      "justsml",
+      "luishrd",
+      "bigknell",
+    ]);
+  })
+  .then((followers) => {
+    followers.forEach((follower) => {
+      axios
+        .get(`https://api.github.com/users/${follower}`)
+        .then((response) => {
+          document
+            .querySelector(".cards")
+            .appendChild(githubCardCreator(response.data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +93,57 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function githubCardCreator(data) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+
+  const cardImage = document.createElement("img");
+  cardImage.src = data.avatar_url;
+  card.appendChild(cardImage);
+
+  const cardInfo = document.createElement("div");
+  cardInfo.classList.add("card-info");
+
+  const cardH3 = document.createElement("h3");
+  cardH3.classList.add("name");
+  cardH3.textContent = data.name;
+  cardInfo.appendChild(cardH3);
+
+  const cardP1 = document.createElement("p");
+  cardP1.classList.add("username");
+  cardP1.textContent = data.login;
+  cardInfo.appendChild(cardP1);
+
+  const cardP2 = document.createElement("p");
+  cardP2.textContent = `Location: ${data.location}`;
+  cardInfo.appendChild(cardP2);
+
+  const cardP3 = document.createElement("p");
+  const cardA = document.createElement("a");
+  cardA.href = data.html_url;
+  cardA.target = "_blank";
+  cardA.textContent = data.html_url;
+  cardP3.textContent = `Profile: `;
+  cardP3.appendChild(cardA);
+  cardInfo.appendChild(cardP3);
+
+  const cardP4 = document.createElement("p");
+  cardP4.textContent = `Followers: ${data.followers}`;
+  cardInfo.appendChild(cardP4);
+
+  const cardP5 = document.createElement("p");
+  cardP5.textContent = `Following: ${data.following}`;
+  cardInfo.appendChild(cardP5);
+
+  const cardP6 = document.createElement("p");
+  cardP6.textContent = `Bio: ${data.bio}`;
+  cardInfo.appendChild(cardP6);
+
+  card.appendChild(cardInfo);
+
+  return card;
+}
 
 /*
   List of LS Instructors Github username's:
