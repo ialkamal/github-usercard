@@ -55,6 +55,10 @@ axios
       "justsml",
       "luishrd",
       "bigknell",
+      "ChadDiaz",
+      "ajablanco",
+      "eddieb2",
+      "JavachipMom",
     ]);
   })
   .then((followers) => {
