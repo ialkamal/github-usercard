@@ -1,4 +1,5 @@
 import axios from "axios";
+import gsap from "gsap";
 
 /*
   STEP 1: using axios, send a GET request to the following URL
@@ -110,18 +111,35 @@ function githubCardCreator(data) {
   cardH3.textContent = data.name;
   cardInfo.appendChild(cardH3);
 
+  const btn = document.createElement("button");
+  btn.classList.add("button-style");
+  btn.textContent = `+`;
+  btn.addEventListener("click", (event) => {
+    const cardInfoDiv = event.target.parentNode.parentNode;
+    cardInfoDiv.offsetHeight === 192
+      ? gsap.to(cardInfoDiv, { duration: 0.5, height: 500 })
+      : gsap.to(cardInfoDiv, { duration: 0.5, height: 192 });
+  });
+  cardInfo.appendChild(btn);
+
   const cardP1 = document.createElement("p");
   cardP1.classList.add("username");
-  cardP1.textContent = data.login;
+  data.login !== null
+    ? (cardP1.textContent = data.login)
+    : (cardP1.textContent = "Not Available");
   cardInfo.appendChild(cardP1);
 
   const cardP2 = document.createElement("p");
-  cardP2.textContent = `Location: ${data.location}`;
+  data.location !== null
+    ? (cardP2.textContent = `Location: ${data.location}`)
+    : (cardP2.textContent = `Location: Not Available`);
   cardInfo.appendChild(cardP2);
 
   const cardP3 = document.createElement("p");
   const cardA = document.createElement("a");
-  cardA.href = data.html_url;
+  data.html_url !== null
+    ? (cardA.href = data.html_url)
+    : (cardA.href = "Not Available");
   cardA.target = "_blank";
   cardA.textContent = data.html_url;
   cardP3.textContent = `Profile: `;
@@ -129,16 +147,59 @@ function githubCardCreator(data) {
   cardInfo.appendChild(cardP3);
 
   const cardP4 = document.createElement("p");
-  cardP4.textContent = `Followers: ${data.followers}`;
+  data.followers !== null
+    ? (cardP4.textContent = `Followers: ${data.followers}`)
+    : (cardP4.textContent = `Followers: Not Available`);
   cardInfo.appendChild(cardP4);
 
   const cardP5 = document.createElement("p");
-  cardP5.textContent = `Following: ${data.following}`;
+  data.followers !== null
+    ? (cardP5.textContent = `Following: ${data.following}`)
+    : (cardP5.textContent = `Following: Not Available`);
   cardInfo.appendChild(cardP5);
 
   const cardP6 = document.createElement("p");
-  cardP6.textContent = `Bio: ${data.bio}`;
+  data.bio !== null
+    ? (cardP6.textContent = `Bio: ${data.bio}`)
+    : (cardP6.textContent = `Bio: Not Available`);
   cardInfo.appendChild(cardP6);
+
+  const cardP7 = document.createElement("p");
+  data.company !== null
+    ? (cardP7.textContent = `Company: ${data.company}`)
+    : (cardP7.textContent = `Company: Not Available`);
+  cardInfo.appendChild(cardP7);
+
+  const cardP8 = document.createElement("p");
+  cardP8.textContent = `Blog: `;
+  const cardA1 = document.createElement("a");
+  data.blog !== null
+    ? (cardA1.href = data.blog)
+    : (cardA1.href = "Not Available");
+  cardA1.target = "_blank";
+  cardA1.textContent = data.blog;
+  cardP8.appendChild(cardA1);
+  cardInfo.appendChild(cardP8);
+
+  const cardP9 = document.createElement("p");
+  data.public_repos !== null
+    ? (cardP9.textContent = `Repositories: ${data.public_repos}`)
+    : (cardP9.textContent = `Repositories: Not Available`);
+  cardInfo.appendChild(cardP9);
+
+  const cardP10 = document.createElement("p");
+  data.twitter_username !== null
+    ? (cardP10.textContent = `Twitter: ${data.twitter_username}`)
+    : (cardP10.textContent = `Twitter: Not Available`);
+  cardInfo.appendChild(cardP10);
+
+  const calenderContainer = document.createElement("div");
+  // eslint-disable-next-line no-undef
+  new GitHubCalendar(calenderContainer, data.login, {
+    tooltips: true,
+    responsive: true,
+  });
+  cardInfo.appendChild(calenderContainer);
 
   card.appendChild(cardInfo);
 
